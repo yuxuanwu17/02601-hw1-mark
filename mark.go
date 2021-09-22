@@ -60,11 +60,14 @@ import (
 type Prefix []string
 
 // String returns the Prefix as a string (for use as a map key).
+// input is a []string list, but the output would be the string, so they need to use Join to connect
 func (p Prefix) String() string {
 	return strings.Join(p, " ")
 }
 
 // Shift removes the first word from the Prefix and appends the given word.
+//The Shift method uses the built-in copy function to copy the last len(p)-1 elements of p to the start of the slice,
+// effectively moving the elements one index to the left (if you consider zero as the leftmost index).
 func (p Prefix) Shift(word string) {
 	copy(p, p[1:])
 	p[len(p)-1] = word
@@ -78,28 +81,32 @@ type Chain struct {
 	prefixLen int
 }
 
-// NewChain returns a new Chain with prefixes of prefixLen words.
+//NewChain returns a new Chain with prefixes of prefixLen words.
+//This is a constructor function
 func NewChain(prefixLen int) *Chain {
 	return &Chain{make(map[string][]string), prefixLen}
 }
 
 // Build reads text from the provided Reader and
 // parses it into prefixes and suffixes that are stored in Chain.
+// The Build method returns once the Reader's Read method returns io.EOF (end of file) or some other read error occurs.
+
 func (c *Chain) Build(r io.Reader) {
-	br := bufio.NewReader(r)
-	p := make(Prefix, c.prefixLen)
+	br := bufio.NewReader(r)       // buffering
+	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
 	for {
 		var s string
-		if _, err := fmt.Fscan(br, &s); err != nil {
+		if _, err := fmt.Fscan(br, &s); err != nil { //为什么这里不能用s来代表，而必须需要用地址来代替
 			break
-		}
+		} // fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
 		key := p.String()
 		c.chain[key] = append(c.chain[key], s)
 		p.Shift(s)
 	}
 }
 
-// Generate returns a string of at most n words generated from Chain.
+// Generate returns a string of at most n words generated from Chain. It reads words from the map and appends them to a slice (words).
+// n specifies the maximum number of integer input
 func (c *Chain) Generate(n int) string {
 	p := make(Prefix, c.prefixLen)
 	var words []string
@@ -107,7 +114,7 @@ func (c *Chain) Generate(n int) string {
 		choices := c.chain[p.String()]
 		if len(choices) == 0 {
 			break
-		}
+		} // if there is not enough suffix
 		next := choices[rand.Intn(len(choices))]
 		words = append(words, next)
 		p.Shift(next)
@@ -116,15 +123,16 @@ func (c *Chain) Generate(n int) string {
 }
 
 func main() {
-	// Register command-line flags.
-	numWords := flag.Int("words", 100, "maximum number of words to print")
-	prefixLen := flag.Int("prefix", 2, "prefix length in words")
+	// Register command-line flags. This is the default format
+	numWords := flag.Int("words", 100, "maximum number of words to print") // used during reading
+	prefixLen := flag.Int("prefix", 2, "prefix length in words")           // used during writing
 
 	flag.Parse()                     // Parse command-line flags.
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
 
-	c := NewChain(*prefixLen)     // Initialize a new Chain.
-	c.Build(os.Stdin)             // Build chains from standard input.
+	c := NewChain(*prefixLen) // Initialize a new Chain.
+	c.Build(os.Stdin)         // Build chains from standard input.
+
 	text := c.Generate(*numWords) // Generate text.
 	fmt.Println(text)             // Write text to standard output.
 }
