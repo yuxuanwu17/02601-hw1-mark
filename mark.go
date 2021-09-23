@@ -52,6 +52,8 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -123,11 +125,23 @@ func (c *Chain) Generate(n int) string {
 }
 
 func ValIteration(val []string) string {
-	processedVal := ""
-	for _, singleVal := range val {
-		processedVal = processedVal + " " + singleVal + "="
+	if len(val) == 1 {
+		return val[0] + " = 1"
+	} else {
+		processedVal := ""
+		count := 1
+		sort.Strings(val)
+
+		for i := 0; i < len(val); i++ {
+			if i < len(val)-1 && val[i] == val[i+1] {
+				count++
+			} else {
+				//fmt.Println(count)
+				processedVal = processedVal + " " + val[i] + " = " + strconv.Itoa(count) + ";"
+			}
+		}
+		return strings.TrimSpace(processedVal)
 	}
-	return strings.TrimSpace(processedVal)
 }
 
 func main() {
@@ -157,9 +171,12 @@ func main() {
 		// format: map[string][]string
 		mapChain := c.chain
 
-		for key, val := range mapChain {
+		// key -> string val->[]string
 
+		for key, val := range mapChain {
 			fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
+			fmt.Println(key, "\t", ValIteration(val), "\n")
+			//fmt.Println(reflect.TypeOf(key))
 		}
 	} else {
 		fmt.Println("generate success")

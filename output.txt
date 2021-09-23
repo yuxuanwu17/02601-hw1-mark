@@ -1,13 +1,13 @@
 2
- 	no=
-how hard	you=
-hard you	try=
-you try	no=
-escape a	black=
-a black	hole=
- no	matter=
-no matter	how= can=
-matter how	hard=
-try no	matter=
-matter can	escape=
-can escape	a=
+we will	finish = 1
+ 	I = 1
+ I	say = 1
+I say	that = 1
+that no	matter = 1
+no matter	how = 2;
+matter how	hard, = 1; strange = 1;
+say that	no = 1
+how hard,	no = 1
+hard, no	matter = 1
+how strange	we = 1
+strange we	will = 1
