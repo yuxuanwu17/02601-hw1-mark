@@ -56,10 +56,18 @@ import (
 	"time"
 )
 
+// Chain contains a map ("chain") of prefixes to a list of suffixes.
+// A prefix is a string of prefixLen words joined with spaces.
+// A suffix is a single word. A prefix can have multiple suffixes.
+type Chain struct {
+	chain     map[string][]string
+	prefixLen int
+}
+
 // Prefix is a Markov chain prefix of one or more words.
 type Prefix []string
 
-// String returns the Prefix as a string (for use as a map key).
+// String returns the Prefix as a string (string uses as a map key).
 // input is a []string list, but the output would be the string, so they need to use Join to connect
 func (p Prefix) String() string {
 	return strings.Join(p, " ")
@@ -71,14 +79,6 @@ func (p Prefix) String() string {
 func (p Prefix) Shift(word string) {
 	copy(p, p[1:])
 	p[len(p)-1] = word
-}
-
-// Chain contains a map ("chain") of prefixes to a list of suffixes.
-// A prefix is a string of prefixLen words joined with spaces.
-// A suffix is a single word. A prefix can have multiple suffixes.
-type Chain struct {
-	chain     map[string][]string
-	prefixLen int
 }
 
 //NewChain returns a new Chain with prefixes of prefixLen words.
@@ -114,7 +114,7 @@ func (c *Chain) Generate(n int) string {
 		choices := c.chain[p.String()]
 		if len(choices) == 0 {
 			break
-		} // if there is not enough suffix
+		} // if there is not enough suffix, break the for loop
 		next := choices[rand.Intn(len(choices))]
 		words = append(words, next)
 		p.Shift(next)
@@ -123,16 +123,40 @@ func (c *Chain) Generate(n int) string {
 }
 
 func main() {
-	// Register command-line flags. This is the default format
+	// Register command-line flags => pointer. This is the default format
+	mode := flag.String("mode", "read", "select the mode, 'read' OR 'generate'")
 	numWords := flag.Int("words", 100, "maximum number of words to print") // used during reading
 	prefixLen := flag.Int("prefix", 2, "prefix length in words")           // used during writing
 
 	flag.Parse()                     // Parse command-line flags.
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
 
-	c := NewChain(*prefixLen) // Initialize a new Chain.
-	c.Build(os.Stdin)         // Build chains from standard input.
+	// Initialize a new Chain.
+	c := NewChain(*prefixLen)
+
+	// mode selection
+	if *mode == "read" {
+		fmt.Println("read success")
+
+		// Build chains from standard input.
+		c.Build(os.Stdin)
+
+		// write the file
+		outFile, _ := os.Create("output.txt")
+		defer outFile.Close()
+		fmt.Fprintln(outFile, *prefixLen)
+
+		// format: map[string][]string
+		mapChain := c.chain
+
+		for key, val := range mapChain {
+			fmt.Fprintln(outFile, key, val)
+		}
+	} else {
+		fmt.Println("generate success")
+	}
 
 	text := c.Generate(*numWords) // Generate text.
-	fmt.Println(text)             // Write text to standard output.
+
+	fmt.Println(text) // Write text to standard output.
 }
