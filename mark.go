@@ -96,7 +96,7 @@ func (c *Chain) Build(r io.Reader) {
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
 	for {
 		var s string
-		if _, err := fmt.Fscan(br, &s); err != nil { //为什么这里不能用s来代表，而必须需要用地址来代替
+		if _, err := fmt.Fscan(br, &s); err != nil { // use &s is the requirement of the Fscan package
 			break
 		} // fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
 		key := p.String()
@@ -120,6 +120,14 @@ func (c *Chain) Generate(n int) string {
 		p.Shift(next)
 	}
 	return strings.Join(words, " ")
+}
+
+func ValIteration(val []string) string {
+	processedVal := ""
+	for _, singleVal := range val {
+		processedVal = processedVal + " " + singleVal + "="
+	}
+	return strings.TrimSpace(processedVal)
 }
 
 func main() {
@@ -150,7 +158,8 @@ func main() {
 		mapChain := c.chain
 
 		for key, val := range mapChain {
-			fmt.Fprintln(outFile, key, val)
+
+			fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
 		}
 	} else {
 		fmt.Println("generate success")
