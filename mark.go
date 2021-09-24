@@ -51,6 +51,7 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -155,8 +156,8 @@ func main() {
 	mode := os.Args[1]
 	prefixLen, _ := strconv.Atoi(os.Args[2])
 	outFileDir := os.Args[3]
-	inFileDir := os.Args[4]
-
+	inFileDir := os.Args[4:]
+	fmt.Println(reflect.TypeOf(inFileDir))
 	numWords := 100
 
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
@@ -167,7 +168,7 @@ func main() {
 	// mode selection
 	if mode == "read" {
 		fmt.Println("We have successfully read, now the program begins:")
-		fi, err := os.Open(inFileDir)
+		fi, err := os.Open(inFileDir[0])
 		if err != nil {
 			panic(err)
 		}
