@@ -47,7 +47,6 @@ package main
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"io"
 	"math/rand"
@@ -96,8 +95,10 @@ func NewChain(prefixLen int) *Chain {
 func (c *Chain) Build(r io.Reader) {
 	br := bufio.NewReader(r)       // buffering
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
-	p[0] = "\"\""
-	p[1] = "\"\""
+	// initialize the p with ""
+	for i := range p {
+		p[i] = "\"\""
+	}
 	//fmt.Println("p initialization: === ",p)
 	count := 0
 	for {
@@ -106,11 +107,6 @@ func (c *Chain) Build(r io.Reader) {
 			break
 		}
 		key := p.String()
-		//if count == 0 {
-		//	//fmt.Println("key after p.String() is: ===>",key)
-		//	//fmt.Println(p)
-		//	break
-		//}
 		c.chain[key] = append(c.chain[key], s)
 		p.Shift(s)
 		count++
@@ -156,30 +152,34 @@ func ValIteration(val []string) string {
 
 func main() {
 	// Register command-line flags => pointer. This is the default format
-	mode := flag.String("mode", "read", "select the mode, 'read' OR 'generate'")
-	prefixLen := flag.Int("prefix", 2, "prefix length in words") // used during reading
-	outFileDir := flag.String("outfilename", "output.txt", "specify the name of output file")
-	//inFileDir := flag.String("infilename","test.txt","specify the name of input file")
+	mode := os.Args[1]
+	prefixLen, _ := strconv.Atoi(os.Args[2])
+	outFileDir := os.Args[3]
+	inFileDir := os.Args[4]
 
-	numWords := flag.Int("words", 100, "maximum number of words to print") // used during writing
+	numWords := 100
 
-	flag.Parse()                     // Parse command-line flags.
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
 
 	// Initialize a new Chain.
-	c := NewChain(*prefixLen)
+	c := NewChain(prefixLen)
 
 	// mode selection
-	if *mode == "read" {
+	if mode == "read" {
 		fmt.Println("We have successfully read, now the program begins:")
+		fi, err := os.Open(inFileDir)
+		if err != nil {
+			panic(err)
+		}
+		defer fi.Close()
 		// Build chains from standard input.
-		c.Build(os.Stdin)
+		c.Build(fi)
 
 		// write the file
-		outFile, _ := os.Create(*outFileDir)
+		outFile, _ := os.Create(outFileDir)
 		defer outFile.Close()
 
-		fmt.Fprintln(outFile, *prefixLen)
+		fmt.Fprintln(outFile, prefixLen)
 
 		// format: map[string][]string
 		mapChain := c.chain
@@ -191,10 +191,15 @@ func main() {
 			fmt.Print(key, " ", ValIteration(val), "\n")
 		}
 	} else {
-		fmt.Println("generate success")
+		fmt.Println("Mode generate selected!!!")
+		// 读取frequency table
+
+		// 变回原来的 c.chain format
+
+		//
 	}
 
-	text := c.Generate(*numWords) // Generate text.
+	text := c.Generate(numWords) // Generate text.
 
 	fmt.Println(text) // Write text to standard output.
 }
