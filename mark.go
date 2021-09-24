@@ -154,21 +154,21 @@ func ValIteration(val []string) string {
 func main() {
 	// Register command-line flags => pointer. This is the default format
 	mode := os.Args[1]
-	prefixLen, _ := strconv.Atoi(os.Args[2])
-	outFileDir := os.Args[3]
-	inFileDir := os.Args[4:]
-	numWords := 100
+	//numWords := 100
 
-	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
-
-	// Initialize a new Chain.
-	c := NewChain(prefixLen)
-
-	outFile, _ := os.Create(outFileDir)
-	defer outFile.Close()
-
-	// mode selection
 	if mode == "read" {
+		// mode selection
+		prefixLen, _ := strconv.Atoi(os.Args[2])
+		outFileDir := os.Args[3]
+		inFileDir := os.Args[4:]
+
+		rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
+
+		// Initialize a new Chain.
+		c := NewChain(prefixLen)
+
+		outFile, _ := os.Create(outFileDir)
+		defer outFile.Close()
 		fmt.Println("We have successfully read, now the program begins:")
 
 		count := 0
@@ -203,9 +203,12 @@ func main() {
 
 	} else {
 		fmt.Println("Mode generate selected!!!")
+
+		modeFileDir := os.Args[2]
+		numWords := os.Args[3]
 		// 读取frequency table
 
-		file, err := os.Open(outFileDir)
+		file, err := os.Open(modeFileDir)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -223,12 +226,13 @@ func main() {
 			}
 
 			// 变回原来的 c.chain format
-
+			currentLine := scanner.Text()
+			fmt.Println(currentLine)
 			//
+			fmt.Println(numWords)
+			//text := c.Generate(numWords) // Generate text.
+			//fmt.Println(text) // Write text to standard output.
 		}
 
-		text := c.Generate(numWords) // Generate text.
-
-		fmt.Println(text) // Write text to standard output.
 	}
 }
