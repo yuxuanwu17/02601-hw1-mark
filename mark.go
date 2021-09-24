@@ -70,7 +70,7 @@ type Chain struct {
 type Prefix []string
 
 // String returns the Prefix as a string (string uses as a map key).
-// input is a []string list, but the output would be the string, so they need to use Join to connect
+// input Prefix is a []string list, but the output would be the string, so they need to use Join to connect
 func (p Prefix) String() string {
 	return strings.Join(p, " ")
 }
@@ -96,6 +96,9 @@ func NewChain(prefixLen int) *Chain {
 func (c *Chain) Build(r io.Reader) {
 	br := bufio.NewReader(r)       // buffering
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
+	p[0] = "\"\""
+	p[1] = "\"\""
+	//fmt.Println("p initialization: === ",p)
 	count := 0
 	for {
 		var s string
@@ -103,8 +106,8 @@ func (c *Chain) Build(r io.Reader) {
 			break
 		}
 		key := p.String()
-		//if count == 1 {
-		//	//fmt.Println(key)
+		//if count == 0 {
+		//	//fmt.Println("key after p.String() is: ===>",key)
 		//	//fmt.Println(p)
 		//	break
 		//}
@@ -144,7 +147,7 @@ func ValIteration(val []string) string {
 				count++
 			} else {
 				//fmt.Println(count)
-				processedVal = processedVal + " " + val[i] + strconv.Itoa(count)
+				processedVal = processedVal + " " + val[i] + " " + strconv.Itoa(count)
 			}
 		}
 		return strings.TrimSpace(processedVal)
@@ -168,8 +171,7 @@ func main() {
 
 	// mode selection
 	if *mode == "read" {
-		fmt.Println("read success")
-
+		fmt.Println("We have successfully read, now the program begins:")
 		// Build chains from standard input.
 		c.Build(os.Stdin)
 
@@ -184,9 +186,9 @@ func main() {
 
 		// key -> string val->[]string
 		for key, val := range mapChain {
-			fmt.Println(key)
+			//fmt.Println(key)
 			fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
-			//fmt.Print(key, " ", ValIteration(val), "\n")
+			fmt.Print(key, " ", ValIteration(val), "\n")
 		}
 	} else {
 		fmt.Println("generate success")
