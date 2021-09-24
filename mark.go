@@ -96,14 +96,21 @@ func NewChain(prefixLen int) *Chain {
 func (c *Chain) Build(r io.Reader) {
 	br := bufio.NewReader(r)       // buffering
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
+	count := 0
 	for {
 		var s string
-		if _, err := fmt.Fscan(br, &s); err != nil { // use &s is the requirement of the Fscan package
+		if _, err := fmt.Fscan(br, &s); err != nil { // use &s is the requirement of the Fscan package // fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
 			break
-		} // fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
+		}
 		key := p.String()
+		//if count == 1 {
+		//	//fmt.Println(key)
+		//	//fmt.Println(p)
+		//	break
+		//}
 		c.chain[key] = append(c.chain[key], s)
 		p.Shift(s)
+		count++
 	}
 }
 
@@ -126,7 +133,7 @@ func (c *Chain) Generate(n int) string {
 
 func ValIteration(val []string) string {
 	if len(val) == 1 {
-		return val[0] + " = 1"
+		return val[0] + " 1"
 	} else {
 		processedVal := ""
 		count := 1
@@ -137,7 +144,7 @@ func ValIteration(val []string) string {
 				count++
 			} else {
 				//fmt.Println(count)
-				processedVal = processedVal + " " + val[i] + " = " + strconv.Itoa(count) + ";"
+				processedVal = processedVal + " " + val[i] + strconv.Itoa(count)
 			}
 		}
 		return strings.TrimSpace(processedVal)
@@ -147,8 +154,11 @@ func ValIteration(val []string) string {
 func main() {
 	// Register command-line flags => pointer. This is the default format
 	mode := flag.String("mode", "read", "select the mode, 'read' OR 'generate'")
-	numWords := flag.Int("words", 100, "maximum number of words to print") // used during reading
-	prefixLen := flag.Int("prefix", 2, "prefix length in words")           // used during writing
+	prefixLen := flag.Int("prefix", 2, "prefix length in words") // used during reading
+	outFileDir := flag.String("outfilename", "output.txt", "specify the name of output file")
+	//inFileDir := flag.String("infilename","test.txt","specify the name of input file")
+
+	numWords := flag.Int("words", 100, "maximum number of words to print") // used during writing
 
 	flag.Parse()                     // Parse command-line flags.
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
@@ -164,19 +174,19 @@ func main() {
 		c.Build(os.Stdin)
 
 		// write the file
-		outFile, _ := os.Create("output.txt")
+		outFile, _ := os.Create(*outFileDir)
 		defer outFile.Close()
+
 		fmt.Fprintln(outFile, *prefixLen)
 
 		// format: map[string][]string
 		mapChain := c.chain
 
 		// key -> string val->[]string
-
 		for key, val := range mapChain {
+			fmt.Println(key)
 			fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
-			fmt.Println(key, "\t", ValIteration(val), "\n")
-			//fmt.Println(reflect.TypeOf(key))
+			//fmt.Print(key, " ", ValIteration(val), "\n")
 		}
 	} else {
 		fmt.Println("generate success")
