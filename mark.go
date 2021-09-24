@@ -49,6 +49,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"log"
 	"math/rand"
 	"os"
 	"sort"
@@ -204,12 +205,30 @@ func main() {
 		fmt.Println("Mode generate selected!!!")
 		// 读取frequency table
 
-		// 变回原来的 c.chain format
+		file, err := os.Open(outFileDir)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
 
-		//
+		// read first line to gain the number of prefix
+		scanner := bufio.NewScanner(file)
+		count := 0
+		for scanner.Scan() {
+			if count == 0 {
+				count++
+				prefixLenRead, _ := strconv.Atoi(scanner.Text())
+				fmt.Println("The length of prefix would be ", prefixLenRead)
+				continue
+			}
+
+			// 变回原来的 c.chain format
+
+			//
+		}
+
+		text := c.Generate(numWords) // Generate text.
+
+		fmt.Println(text) // Write text to standard output.
 	}
-
-	text := c.Generate(numWords) // Generate text.
-
-	fmt.Println(text) // Write text to standard output.
 }
