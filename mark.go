@@ -51,7 +51,6 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -157,7 +156,6 @@ func main() {
 	prefixLen, _ := strconv.Atoi(os.Args[2])
 	outFileDir := os.Args[3]
 	inFileDir := os.Args[4:]
-	fmt.Println(reflect.TypeOf(inFileDir))
 	numWords := 100
 
 	rand.Seed(time.Now().UnixNano()) // Seed the random number generator.
@@ -165,32 +163,43 @@ func main() {
 	// Initialize a new Chain.
 	c := NewChain(prefixLen)
 
+	outFile, _ := os.Create(outFileDir)
+	defer outFile.Close()
+
 	// mode selection
 	if mode == "read" {
 		fmt.Println("We have successfully read, now the program begins:")
-		fi, err := os.Open(inFileDir[0])
-		if err != nil {
-			panic(err)
+
+		count := 0
+		for i := 0; i < len(inFileDir); i++ {
+
+			// open the input files
+			fi, err := os.Open(inFileDir[i])
+			if err != nil {
+				panic(err)
+			}
+			defer fi.Close()
+
+			// Build chains from standard input.
+			c.Build(fi)
+
+			// the first line, specify the number of prefix length
+			if count == 0 {
+				fmt.Fprintln(outFile, prefixLen)
+			}
+			// format: map[string][]string
+			mapChain := c.chain
+
+			// key -> string val->[]string
+			for key, val := range mapChain {
+				//fmt.Println(key)
+				fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
+				fmt.Print(key, " ", ValIteration(val), "\n")
+			}
+			count++
+			fmt.Println("==================== one epoch finished =====================================")
 		}
-		defer fi.Close()
-		// Build chains from standard input.
-		c.Build(fi)
 
-		// write the file
-		outFile, _ := os.Create(outFileDir)
-		defer outFile.Close()
-
-		fmt.Fprintln(outFile, prefixLen)
-
-		// format: map[string][]string
-		mapChain := c.chain
-
-		// key -> string val->[]string
-		for key, val := range mapChain {
-			//fmt.Println(key)
-			fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
-			fmt.Print(key, " ", ValIteration(val), "\n")
-		}
 	} else {
 		fmt.Println("Mode generate selected!!!")
 		// 读取frequency table
