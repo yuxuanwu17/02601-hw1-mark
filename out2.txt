@@ -1,73 +1,27 @@
-2
-strange we	will 1
-we will	finish 1
-"" ""	I 1
-I say	that 1
-matter how	hard, 1 strange 1
-how hard,	no 1
-how strange	we 1
-"" I	say 1
-say that	no 1
-that no	matter 1
-no matter	how 2
-hard, no	matter 1
-I say	that 2
-matter how	hard, 2 strange 3
-how hard,	no 2
-how strange	we 2
-strange we	will 2
-we will	finish 2
-"" ""	I 2
-say that	no 2
-that no	matter 2
-no matter	how 4
-hard, no	matter 2
-"" I	say 2
-how hard,	no 3
-how strange	we 3
-strange we	will 3
-we will	finish 3
-"" ""	I 3
-I say	that 3
-matter how	hard, 3 strange 5
-no matter	how 6
-hard, no	matter 3
-"" I	say 3
-say that	no 3
-that no	matter 3
-no matter	how 8
-hard, no	matter 4
-"" I	say 4
-say that	no 4
-that no	matter 4
-how hard,	no 4
-how strange	we 4
-strange we	will 4
-we will	finish 4
-"" ""	I 4
-I say	that 4
-matter how	hard, 4 strange 7
-"" I	say 5
-say that	no 5
-that no	matter 5
-no matter	how 10
-hard, no	matter 5
-strange we	will 5
-we will	finish 5
-"" ""	I 5
-I say	that 5
-matter how	hard, 5 strange 9
-how hard,	no 5
-how strange	we 5
-"" ""	I 6
-I say	that 6
-matter how	hard, 6 strange 11
-how hard,	no 6
-how strange	we 6
-strange we	will 6
-we will	finish 6
-"" I	say 6
-say that	no 6
-that no	matter 6
-no matter	how 12
-hard, no	matter 6
+3
+matter how hard,	no 1
+matter how strange	we 1
+how strange we	will 1
+"" "" ""	I 1
+"" "" I	say 1
+"" I say	that 1
+I say that	no 1
+no matter how	hard, 1 strange 1
+say that no	matter 1
+that no matter	how 1
+how hard, no	matter 1
+hard, no matter	how 1
+strange we will	finish 1
+"" "" ""	I 2
+"" "" I	say 2
+"" I say	that 2
+I say that	no 2
+no matter how	hard, 2 strange 3
+matter how hard,	no 2
+matter how strange	we 2
+how strange we	will 2
+say that no	matter 2
+that no matter	how 2
+how hard, no	matter 2
+hard, no matter	how 2
+strange we will	finish 2

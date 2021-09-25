@@ -1,0 +1,38 @@
+./mark read 3 poe.model test.txt test.txt test.txt
+./mark read 2 poe.model test.txt
+./mark generate poe.model 100
+
+
+output 的结果
+
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter]] 2}
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter]] 2}
+
+
+
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter]] 2}
+
+
+
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map["" "":[I] "" I:[say] I say:[that] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+
+
+&{map["" "":[I] "" I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+
+总是少一个值，怀疑是和边界有关，还有一个问题是和重复数字有关
+
+
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+
+
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+成功的
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map[:[I] I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
