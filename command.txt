@@ -1,0 +1,3 @@
+./mark read 3 poe.model test.txt test.txt test.txt
+
+./mark generate poe.model 100

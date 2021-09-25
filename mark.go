@@ -100,8 +100,6 @@ func (c *Chain) Build(r io.Reader) {
 	for i := range p {
 		p[i] = "\"\""
 	}
-	//fmt.Println("p initialization: === ",p)
-	count := 0
 	for {
 		var s string
 		// fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
@@ -111,8 +109,34 @@ func (c *Chain) Build(r io.Reader) {
 		key := p.String()
 		c.chain[key] = append(c.chain[key], s)
 		p.Shift(s)
+	}
+}
+
+// 基于指针对象的函数
+// https://docs.hacknode.org/gopl-zh/ch6/ch6-02.html
+
+func (c *Chain) BuildFromRead(scanner *bufio.Scanner) {
+	//p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.、
+
+	// 要以 key - val的形式来储存
+	// key -> string val->[]string
+	// key 为前n个， val 为 后面的两个，去除掉数字的个数
+	count := 0
+	for scanner.Scan() {
+		if count == 0 {
+			count++
+			continue
+		}
+
+		// 变回原来的 c.chain format
+		currentLine := scanner.Text()
+
+		// 考虑newChain 重新弄一下
+		fmt.Println(currentLine)
+		//
 		count++
 	}
+	fmt.Println(count)
 }
 
 // Generate returns a string of at most n words generated from Chain. It reads words from the map and appends them to a slice (words).
@@ -204,11 +228,11 @@ func main() {
 	} else {
 		fmt.Println("Mode generate selected!!!")
 
-		modeFileDir := os.Args[2]
+		modelFileDir := os.Args[2]
 		//numWords := os.Args[3]
 		// 读取frequency table
 
-		file, err := os.Open(modeFileDir)
+		file, err := os.Open(modelFileDir)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -226,26 +250,13 @@ func main() {
 		prefixLen := numList[0]
 		fmt.Println("The first line would be: ", prefixLen)
 
-		count := 0
-		for scanner.Scan() {
-			if count == 0 {
-				count++
-				//prefixLenRead, _ := strconv.Atoi(scanner.Text())
-				//numList = append(numList, prefixLenRead)
-				continue
-			}
+		// Reinitilize a chain
+		c := NewChain(prefixLen)
 
-			// 变回原来的 c.chain format
-			currentLine := scanner.Text()
-
-			// 考虑newChain 重新弄一下
-
-			fmt.Println(currentLine)
-			//
-			//fmt.Println(numWords)
-			//text := c.Generate(numWords) // Generate text.
-			//fmt.Println(text) // Write text to standard output.
-		}
+		c.BuildFromRead(scanner)
 
 	}
 }
+
+//text := c.Generate(numWords) // Generate text.
+//fmt.Println(text) // Write text to standard output.
