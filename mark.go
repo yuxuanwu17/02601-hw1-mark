@@ -104,7 +104,8 @@ func (c *Chain) Build(r io.Reader) {
 	count := 0
 	for {
 		var s string
-		if _, err := fmt.Fscan(br, &s); err != nil { // use &s is the requirement of the Fscan package // fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
+		// fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
+		if _, err := fmt.Fscan(br, &s); err != nil { // use &s is the requirement of the Fscan package
 			break
 		}
 		key := p.String()
@@ -154,7 +155,6 @@ func ValIteration(val []string) string {
 func main() {
 	// Register command-line flags => pointer. This is the default format
 	mode := os.Args[1]
-	//numWords := 100
 
 	if mode == "read" {
 		// mode selection
@@ -205,7 +205,7 @@ func main() {
 		fmt.Println("Mode generate selected!!!")
 
 		modeFileDir := os.Args[2]
-		numWords := os.Args[3]
+		//numWords := os.Args[3]
 		// 读取frequency table
 
 		file, err := os.Open(modeFileDir)
@@ -216,20 +216,33 @@ func main() {
 
 		// read first line to gain the number of prefix
 		scanner := bufio.NewScanner(file)
+		numList := make([]int, 0)
+		for scanner.Scan() {
+			prefixLenRead, _ := strconv.Atoi(scanner.Text())
+			numList = append(numList, prefixLenRead)
+			break
+		}
+
+		prefixLen := numList[0]
+		fmt.Println("The first line would be: ", prefixLen)
+
 		count := 0
 		for scanner.Scan() {
 			if count == 0 {
 				count++
-				prefixLenRead, _ := strconv.Atoi(scanner.Text())
-				fmt.Println("The length of prefix would be ", prefixLenRead)
+				//prefixLenRead, _ := strconv.Atoi(scanner.Text())
+				//numList = append(numList, prefixLenRead)
 				continue
 			}
 
 			// 变回原来的 c.chain format
 			currentLine := scanner.Text()
+
+			// 考虑newChain 重新弄一下
+
 			fmt.Println(currentLine)
 			//
-			fmt.Println(numWords)
+			//fmt.Println(numWords)
 			//text := c.Generate(numWords) // Generate text.
 			//fmt.Println(text) // Write text to standard output.
 		}
