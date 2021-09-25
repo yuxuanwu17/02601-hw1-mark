@@ -52,6 +52,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -115,7 +116,7 @@ func (c *Chain) Build(r io.Reader) {
 // 基于指针对象的函数
 // https://docs.hacknode.org/gopl-zh/ch6/ch6-02.html
 
-func (c *Chain) BuildFromRead(scanner *bufio.Scanner) {
+func (c *Chain) BuildFromRead(scanner *bufio.Scanner, prefixLen int) {
 	//p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.、
 
 	// 要以 key - val的形式来储存
@@ -130,9 +131,8 @@ func (c *Chain) BuildFromRead(scanner *bufio.Scanner) {
 
 		// 变回原来的 c.chain format
 		currentLine := scanner.Text()
-
+		TextLineToChain(currentLine, prefixLen)
 		// 考虑newChain 重新弄一下
-		fmt.Println(currentLine)
 		//
 		count++
 	}
@@ -174,6 +174,39 @@ func ValIteration(val []string) string {
 		}
 		return strings.TrimSpace(processedVal)
 	}
+}
+
+func TextLineToChain(currentLine string, prefixLen int) map[string][]string {
+
+	// regex
+	reg := regexp.MustCompile(`\D+`)
+	if reg == nil {
+		fmt.Println("MustCompile err")
+	}
+	result := reg.FindAllString(currentLine, -1)
+
+	// back to one string
+	resultOneString := ""
+	for _, s := range result {
+		resultOneString = resultOneString + s
+	}
+
+	// 将[]int 合并为一条string
+	if len(result) == 2 {
+		fmt.Println(result)
+		fmt.Println(result[0])
+		fmt.Println(result[1])
+		fmt.Println(resultOneString)
+	}
+	//fmt.Println(result)
+	//fmt.Println(reflect.TypeOf(result))
+	//fmt.Println(strings.Split(result[]," "))
+	//key -> string val->[]string
+
+	// create the format suitable for key
+
+	mapChain := make(map[string][]string)
+	return mapChain
 }
 
 func main() {
@@ -253,7 +286,7 @@ func main() {
 		// Reinitilize a chain
 		c := NewChain(prefixLen)
 
-		c.BuildFromRead(scanner)
+		c.BuildFromRead(scanner, prefixLen)
 
 	}
 }
