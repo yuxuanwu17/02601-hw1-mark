@@ -186,24 +186,30 @@ func TextLineToChain(currentLine string, prefixLen int) map[string][]string {
 	result := reg.FindAllString(currentLine, -1)
 
 	// back to one string
+	// []int -> string
 	resultOneString := ""
 	for _, s := range result {
 		resultOneString = resultOneString + s
 	}
 
-	// 将[]int 合并为一条string
-	if len(result) == 2 {
-		fmt.Println(result)
-		fmt.Println(result[0])
-		fmt.Println(result[1])
-		fmt.Println(resultOneString)
-	}
-	//fmt.Println(result)
-	//fmt.Println(reflect.TypeOf(result))
-	//fmt.Println(strings.Split(result[]," "))
 	//key -> string val->[]string
-
 	// create the format suitable for key
+	splitStringList := strings.Split(resultOneString, " ")
+
+	key := ""
+	val := make([]string, 0)
+
+	for i := 0; i < len(splitStringList)-1; i++ {
+		// 前 prefixLen 作为key
+		if i < prefixLen {
+			key = key + splitStringList[i] + " "
+		} else {
+			val = append(val, strings.TrimSpace(splitStringList[i]))
+		}
+	}
+
+	fmt.Println("key============>", key)
+	fmt.Println("Val:", val)
 
 	mapChain := make(map[string][]string)
 	return mapChain
@@ -251,7 +257,7 @@ func main() {
 			// key -> string val->[]string
 			for key, val := range mapChain {
 				//fmt.Println(key)
-				fmt.Fprint(outFile, key, "\t", ValIteration(val), "\n")
+				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
 				fmt.Print(key, " ", ValIteration(val), "\n")
 			}
 			count++
