@@ -98,9 +98,9 @@ func (c *Chain) Build(r io.Reader) {
 	br := bufio.NewReader(r)       // buffering
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
 	// initialize the p with ""
-	for i := range p {
-		p[i] = "\"\""
-	}
+	//for i := range p {
+	//	p[i] = "\"\""
+	//}
 	for {
 		var s string
 		// fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
@@ -117,26 +117,28 @@ func (c *Chain) Build(r io.Reader) {
 // https://docs.hacknode.org/gopl-zh/ch6/ch6-02.html
 
 func (c *Chain) BuildFromRead(scanner *bufio.Scanner, prefixLen int) {
-	//p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.、
+	p := make(map[string][]string) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.、
 
 	// 要以 key - val的形式来储存
 	// key -> string val->[]string
 	// key 为前n个， val 为 后面的两个，去除掉数字的个数
 	count := 0
 	for scanner.Scan() {
-		if count == 0 {
-			count++
-			continue
-		}
 
 		// 变回原来的 c.chain format
 		currentLine := scanner.Text()
-		TextLineToChain(currentLine, prefixLen)
-		// 考虑newChain 重新弄一下
+		//fmt.Println(currentLine)
+		key, val := TextLineToChain(currentLine, prefixLen)
+		p[key] = val
+
+		// 需要一个初始化的值
+
 		//
 		count++
 	}
 	fmt.Println(count)
+	c.chain = p
+	c.prefixLen = prefixLen
 }
 
 // Generate returns a string of at most n words generated from Chain. It reads words from the map and appends them to a slice (words).
@@ -176,7 +178,7 @@ func ValIteration(val []string) string {
 	}
 }
 
-func TextLineToChain(currentLine string, prefixLen int) map[string][]string {
+func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 
 	// regex
 	reg := regexp.MustCompile(`\D+`)
@@ -202,17 +204,25 @@ func TextLineToChain(currentLine string, prefixLen int) map[string][]string {
 	for i := 0; i < len(splitStringList)-1; i++ {
 		// 前 prefixLen 作为key
 		if i < prefixLen {
-			key = key + splitStringList[i] + " "
+			if key == "\"\"" {
+				key = ""
+				key = key + splitStringList[i] + " "
+			} else {
+				key = key + splitStringList[i] + " "
+			}
 		} else {
+			if splitStringList[i] == "" {
+				fmt.Println("碰到为空的值了")
+				continue
+			}
 			val = append(val, strings.TrimSpace(splitStringList[i]))
 		}
 	}
 
-	fmt.Println("key============>", key)
-	fmt.Println("Val:", val)
+	//fmt.Println("key============", key)
+	//fmt.Println("Val:", val)
 
-	mapChain := make(map[string][]string)
-	return mapChain
+	return strings.TrimSpace(key), val
 }
 
 func main() {
@@ -247,18 +257,19 @@ func main() {
 			// Build chains from standard input.
 			c.Build(fi)
 
+			fmt.Println(c)
 			// the first line, specify the number of prefix length
 			if count == 0 {
 				fmt.Fprintln(outFile, prefixLen)
 			}
 			// format: map[string][]string
 			mapChain := c.chain
-
+			//fmt.Println(mapChain)
 			// key -> string val->[]string
 			for key, val := range mapChain {
 				//fmt.Println(key)
 				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
-				fmt.Print(key, " ", ValIteration(val), "\n")
+				//fmt.Print(key, " ", ValIteration(val), "\n")
 			}
 			count++
 			fmt.Println("==================== one epoch finished =====================================")
@@ -293,9 +304,10 @@ func main() {
 		c := NewChain(prefixLen)
 
 		c.BuildFromRead(scanner, prefixLen)
+		fmt.Println(c)
+
+		text := c.Generate(100) // Generate text.
+		fmt.Println(text)       // Write text to standard output.
 
 	}
 }
-
-//text := c.Generate(numWords) // Generate text.
-//fmt.Println(text) // Write text to standard output.
