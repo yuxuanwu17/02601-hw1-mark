@@ -97,10 +97,10 @@ func NewChain(prefixLen int) *Chain {
 func (c *Chain) Build(r io.Reader) {
 	br := bufio.NewReader(r)       // buffering
 	p := make(Prefix, c.prefixLen) // We'll use this variable to hold the current prefix and mutate it with each new word we encounter.
-	// initialize the p with ""
-	//for i := range p {
-	//	p[i] = "\"\""
-	//}
+	//initialize the p with ""
+	for i := range p {
+		p[i] = "\"\""
+	}
 	for {
 		var s string
 		// fmt.Fscan reads space-separated values from an io.Reader + stops if errors occurred.
@@ -130,13 +130,9 @@ func (c *Chain) BuildFromRead(scanner *bufio.Scanner, prefixLen int) {
 		//fmt.Println(currentLine)
 		key, val := TextLineToChain(currentLine, prefixLen)
 		p[key] = val
-
-		// 需要一个初始化的值
-
 		//
 		count++
 	}
-	fmt.Println(count)
 	c.chain = p
 	c.prefixLen = prefixLen
 }
@@ -146,6 +142,9 @@ func (c *Chain) BuildFromRead(scanner *bufio.Scanner, prefixLen int) {
 func (c *Chain) Generate(n int) string {
 	p := make(Prefix, c.prefixLen)
 	var words []string
+	for i := range p {
+		p[i] = "\"\""
+	}
 	for i := 0; i < n; i++ {
 		choices := c.chain[p.String()]
 		if len(choices) == 0 {
@@ -212,7 +211,7 @@ func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 			}
 		} else {
 			if splitStringList[i] == "" {
-				fmt.Println("碰到为空的值了")
+				//fmt.Println("碰到为空的值了")
 				continue
 			}
 			val = append(val, strings.TrimSpace(splitStringList[i]))
@@ -227,7 +226,8 @@ func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 
 func main() {
 	// Register command-line flags => pointer. This is the default format
-	mode := os.Args[1]
+	//mode := os.Args[1]
+	mode := "generate"
 
 	if mode == "read" {
 		// mode selection
@@ -278,10 +278,10 @@ func main() {
 	} else {
 		fmt.Println("Mode generate selected!!!")
 
-		modelFileDir := os.Args[2]
+		modelFileDir := "poe.model"
+		//modelFileDir := os.Args[2]
 		//numWords := os.Args[3]
 		// 读取frequency table
-
 		file, err := os.Open(modelFileDir)
 		if err != nil {
 			log.Fatal(err)
@@ -304,7 +304,7 @@ func main() {
 		c := NewChain(prefixLen)
 
 		c.BuildFromRead(scanner, prefixLen)
-		fmt.Println(c)
+		//fmt.Println(c)
 
 		text := c.Generate(100) // Generate text.
 		fmt.Println(text)       // Write text to standard output.
