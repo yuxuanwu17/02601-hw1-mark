@@ -35,4 +35,6 @@ output 的结果
 成功的
 &{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
 &{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+&{map[ :[I]  I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}
+
 &{map[:[I] I:[say] I say:[that] hard, no:[matter] how hard,:[no] how strange:[we] matter how:[hard, strange] no matter:[how] say that:[no] strange we:[will] that no:[matter] we will:[finish]] 2}

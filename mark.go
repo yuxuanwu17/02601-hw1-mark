@@ -52,7 +52,6 @@ import (
 	"log"
 	"math/rand"
 	"os"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -177,50 +176,73 @@ func ValIteration(val []string) string {
 	}
 }
 
+//func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
+//
+//	// regex
+//	reg := regexp.MustCompile(`\D+`)
+//	if reg == nil {
+//		fmt.Println("MustCompile err")
+//	}
+//	result := reg.FindAllString(currentLine, -1)
+//
+//	// back to one string
+//	// []int -> string
+//	resultOneString := ""
+//	for _, s := range result {
+//		resultOneString = resultOneString + s
+//	}
+//
+//	//key -> string val->[]string
+//	// create the format suitable for key
+//	splitStringList := strings.Split(resultOneString, " ")
+//
+//	key := ""
+//	val := make([]string, 0)
+//
+//	for i := 0; i < len(splitStringList)-1; i++ {
+//		// 前 prefixLen 作为key
+//		if i < prefixLen {
+//			if key == "\"\"" {
+//				key = ""
+//				key = key + splitStringList[i] + " "
+//			} else {
+//				key = key + splitStringList[i] + " "
+//			}
+//		} else {
+//			if splitStringList[i] == "" {
+//				//fmt.Println("碰到为空的值了")
+//				continue
+//			}
+//			val = append(val, strings.TrimSpace(splitStringList[i]))
+//		}
+//	}
+//
+//	//fmt.Println("key============", key)
+//	//fmt.Println("Val:", val)
+//
+//	return strings.TrimSpace(key), val
+//}
+
 func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
-
-	// regex
-	reg := regexp.MustCompile(`\D+`)
-	if reg == nil {
-		fmt.Println("MustCompile err")
-	}
-	result := reg.FindAllString(currentLine, -1)
-
-	// back to one string
-	// []int -> string
-	resultOneString := ""
-	for _, s := range result {
-		resultOneString = resultOneString + s
-	}
-
-	//key -> string val->[]string
-	// create the format suitable for key
-	splitStringList := strings.Split(resultOneString, " ")
+	splitCurrentLine := strings.Split(currentLine, " ")
 
 	key := ""
-	val := make([]string, 0)
+	for i := 0; i < prefixLen; i++ {
+		key = key + " " + splitCurrentLine[i]
+	}
 
-	for i := 0; i < len(splitStringList)-1; i++ {
-		// 前 prefixLen 作为key
-		if i < prefixLen {
-			if key == "\"\"" {
-				key = ""
-				key = key + splitStringList[i] + " "
-			} else {
-				key = key + splitStringList[i] + " "
-			}
-		} else {
-			if splitStringList[i] == "" {
-				//fmt.Println("碰到为空的值了")
-				continue
-			}
-			val = append(val, strings.TrimSpace(splitStringList[i]))
+	val := make([]string, 0)
+	for i := prefixLen; i < len(splitCurrentLine); i = i + 2 {
+
+		freqNum, _ := strconv.Atoi(splitCurrentLine[i+1])
+
+		for j := 0; j < freqNum; j++ {
+			val = append(val, splitCurrentLine[i])
+
 		}
 	}
 
-	//fmt.Println("key============", key)
-	//fmt.Println("Val:", val)
-
+	//fmt.Println(val)
 	return strings.TrimSpace(key), val
 }
 
@@ -298,7 +320,7 @@ func main() {
 		}
 
 		prefixLen := numList[0]
-		fmt.Println("The first line would be: ", prefixLen)
+		//fmt.Println("The first line would be: ", prefixLen)
 
 		// Reinitilize a chain
 		c := NewChain(prefixLen)
