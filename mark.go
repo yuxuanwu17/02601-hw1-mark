@@ -161,16 +161,25 @@ func ValIteration(val []string) string {
 		return val[0] + " 1"
 	} else {
 		processedVal := ""
-		count := 1
+		count := make(map[string]int)
 		sort.Strings(val)
 
-		for i := 0; i < len(val); i++ {
-			if i < len(val)-1 && val[i] == val[i+1] {
-				count++
-			} else {
-				processedVal = processedVal + " " + val[i] + " " + strconv.Itoa(count)
-			}
+		for _, v := range val {
+			count[v]++
 		}
+
+		//fmt.Println(count)
+		for k, v := range count {
+			processedVal = processedVal + " " + k + " " + strconv.Itoa(v)
+		}
+		//for i := 0; i < len(val); i++ {
+		//	if i < len(val)-1 && val[i] == val[i+1] {
+		//		count++
+		//	} else {
+		//		processedVal = processedVal + " " + val[i] + " " + strconv.Itoa(count)
+		//	}
+		//}
+		//fmt.Println(strings.TrimSpace(processedVal))
 		return strings.TrimSpace(processedVal)
 	}
 }
@@ -288,10 +297,12 @@ func main() {
 			// key -> string val->[]string
 			for key, val := range mapChain {
 				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
-				if key == "with her," {
-					fmt.Println(val)
-				}
-				//fmt.Print(key, " ", ValIteration(val), "\n")
+				//if key == "with her," {
+				//	//fmt.Println(val)
+				//	//fmt.Print(key, " ", ValIteration(val), "\n")
+				//	fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
+				//
+				//}
 			}
 			count++
 			//fmt.Println("==================== one epoch finished =====================================")
