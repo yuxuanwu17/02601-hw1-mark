@@ -236,13 +236,14 @@ func main() {
 				fmt.Fprintln(outFile, prefixLen)
 			}
 			// format: map[string][]string
-			mapChain := c.chain
 
 			// key -> string val->[]string
-			for key, val := range mapChain {
-				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
-			}
 			count++
+		}
+
+		mapChain := c.chain
+		for key, val := range mapChain {
+			fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
 		}
 
 	} else {
