@@ -168,7 +168,6 @@ func ValIteration(val []string) string {
 			if i < len(val)-1 && val[i] == val[i+1] {
 				count++
 			} else {
-				//fmt.Println(count)
 				processedVal = processedVal + " " + val[i] + " " + strconv.Itoa(count)
 			}
 		}
@@ -279,18 +278,19 @@ func main() {
 			// Build chains from standard input.
 			c.Build(fi)
 
-			//fmt.Println(c)
 			// the first line, specify the number of prefix length
 			if count == 0 {
 				fmt.Fprintln(outFile, prefixLen)
 			}
 			// format: map[string][]string
 			mapChain := c.chain
-			//fmt.Println(mapChain)
+
 			// key -> string val->[]string
 			for key, val := range mapChain {
-				//fmt.Println(key)
 				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
+				if key == "with her," {
+					fmt.Println(val)
+				}
 				//fmt.Print(key, " ", ValIteration(val), "\n")
 			}
 			count++

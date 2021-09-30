@@ -1,5 +1,5 @@
 ./mark read 3 poe.model test.txt test.txt test.txt
-./mark read 2 poe.model test.txt
+./mark read 2 test.model test.txt
 ./mark generate poe.model 100
 
 
