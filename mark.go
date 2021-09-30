@@ -248,8 +248,8 @@ func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 
 func main() {
 	// Register command-line flags => pointer. This is the default format
-	//mode := os.Args[1]
-	mode := "generate"
+	mode := os.Args[1]
+	//mode := "read"
 
 	if mode == "read" {
 		// mode selection
@@ -279,7 +279,7 @@ func main() {
 			// Build chains from standard input.
 			c.Build(fi)
 
-			fmt.Println(c)
+			//fmt.Println(c)
 			// the first line, specify the number of prefix length
 			if count == 0 {
 				fmt.Fprintln(outFile, prefixLen)
@@ -294,15 +294,15 @@ func main() {
 				//fmt.Print(key, " ", ValIteration(val), "\n")
 			}
 			count++
-			fmt.Println("==================== one epoch finished =====================================")
+			//fmt.Println("==================== one epoch finished =====================================")
 		}
 
 	} else {
 		fmt.Println("Mode generate selected!!!")
 
-		modelFileDir := "poe.model"
-		//modelFileDir := os.Args[2]
-		//numWords := os.Args[3]
+		//modelFileDir := "poe.model"
+		modelFileDir := os.Args[2]
+		numWords, _ := strconv.Atoi(os.Args[3])
 		// 读取frequency table
 		file, err := os.Open(modelFileDir)
 		if err != nil {
@@ -328,8 +328,8 @@ func main() {
 		c.BuildFromRead(scanner, prefixLen)
 		//fmt.Println(c)
 
-		text := c.Generate(100) // Generate text.
-		fmt.Println(text)       // Write text to standard output.
+		text := c.Generate(numWords) // Generate text.
+		fmt.Println(text)            // Write text to standard output.
 
 	}
 }
