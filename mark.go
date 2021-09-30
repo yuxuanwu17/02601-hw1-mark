@@ -172,64 +172,9 @@ func ValIteration(val []string) string {
 		for k, v := range count {
 			processedVal = processedVal + " " + k + " " + strconv.Itoa(v)
 		}
-		//for i := 0; i < len(val); i++ {
-		//	if i < len(val)-1 && val[i] == val[i+1] {
-		//		count++
-		//	} else {
-		//		processedVal = processedVal + " " + val[i] + " " + strconv.Itoa(count)
-		//	}
-		//}
-		//fmt.Println(strings.TrimSpace(processedVal))
 		return strings.TrimSpace(processedVal)
 	}
 }
-
-//func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
-//
-//	// regex
-//	reg := regexp.MustCompile(`\D+`)
-//	if reg == nil {
-//		fmt.Println("MustCompile err")
-//	}
-//	result := reg.FindAllString(currentLine, -1)
-//
-//	// back to one string
-//	// []int -> string
-//	resultOneString := ""
-//	for _, s := range result {
-//		resultOneString = resultOneString + s
-//	}
-//
-//	//key -> string val->[]string
-//	// create the format suitable for key
-//	splitStringList := strings.Split(resultOneString, " ")
-//
-//	key := ""
-//	val := make([]string, 0)
-//
-//	for i := 0; i < len(splitStringList)-1; i++ {
-//		// 前 prefixLen 作为key
-//		if i < prefixLen {
-//			if key == "\"\"" {
-//				key = ""
-//				key = key + splitStringList[i] + " "
-//			} else {
-//				key = key + splitStringList[i] + " "
-//			}
-//		} else {
-//			if splitStringList[i] == "" {
-//				//fmt.Println("碰到为空的值了")
-//				continue
-//			}
-//			val = append(val, strings.TrimSpace(splitStringList[i]))
-//		}
-//	}
-//
-//	//fmt.Println("key============", key)
-//	//fmt.Println("Val:", val)
-//
-//	return strings.TrimSpace(key), val
-//}
 
 func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 	splitCurrentLine := strings.Split(currentLine, " ")
@@ -257,7 +202,6 @@ func TextLineToChain(currentLine string, prefixLen int) (string, []string) {
 func main() {
 	// Register command-line flags => pointer. This is the default format
 	mode := os.Args[1]
-	//mode := "read"
 
 	if mode == "read" {
 		// mode selection
@@ -297,15 +241,8 @@ func main() {
 			// key -> string val->[]string
 			for key, val := range mapChain {
 				fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
-				//if key == "with her," {
-				//	//fmt.Println(val)
-				//	//fmt.Print(key, " ", ValIteration(val), "\n")
-				//	fmt.Fprint(outFile, key, " ", ValIteration(val), "\n")
-				//
-				//}
 			}
 			count++
-			//fmt.Println("==================== one epoch finished =====================================")
 		}
 
 	} else {
